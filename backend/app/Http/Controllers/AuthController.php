@@ -20,4 +20,10 @@ class AuthController
 
         return response()->json(['message' => 'Login successful']);
     }
+
+    public function logout()
+    {
+        Auth::guard('web')->logout();
+        return response()->json(['message' => 'Logout successful']);
+    }
 }

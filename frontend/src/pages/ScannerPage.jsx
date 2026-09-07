@@ -51,7 +51,7 @@ function ScannerPage() {
                                     console.log("Resume error:", error);
                                 }
                             }
-                        });
+                        }, 3000);
                     }
                 );
 

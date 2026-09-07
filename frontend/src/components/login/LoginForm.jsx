@@ -38,9 +38,7 @@ function LoginForm() {
 
 return (
         <div className="min-h-screen w-full flex justify-center items-center bg-gray-100">
-
             <div className="w-[400px] bg-white p-10 rounded-xl shadow-lg">
-
                 <div className="text-center mb-8">
                     <h1 className="m-0 mb-2 text-[28px] text-gray-800">Admin Login</h1>
                     <p className="m-0 text-sm text-gray-500">Student Attendance Management System</p>
