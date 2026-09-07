@@ -6,6 +6,7 @@ function LoginForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const handleLogin = async (e) => {
                 e.preventDefault();
         try {
@@ -31,7 +32,7 @@ function LoginForm() {
             console.log(response.data);
             navigate("/dashboard");
         } catch (error) {
-            console.log(error);
+        setError(error.response?.data?.message || "Login failed");
         }
     };
 
@@ -68,6 +69,9 @@ return (
                         />
                     </div>
 
+                    {error && (
+                        <p className="text-red-600 text-sm mb-4">{error}</p>
+                        )}
                     <button type="submit" className="w-full py-3 border-0 rounded-md bg-indigo-600 text-white text-[15px] font-semibold cursor-pointer hover:bg-indigo-700">Login</button>
                 </form>
             </div>

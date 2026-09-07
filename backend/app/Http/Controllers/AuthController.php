@@ -15,7 +15,7 @@ class AuthController
         ]);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid email or password']);
+            return response()->json(['message' => 'Invalid email or password'], 401);
         }
 
         return response()->json(['message' => 'Login successful']);
