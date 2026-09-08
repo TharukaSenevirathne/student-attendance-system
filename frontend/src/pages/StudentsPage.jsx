@@ -70,7 +70,7 @@ return (
 
             <button
                 onClick={() => navigate("/students/create")}
-                className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700">Add Student</button>
+                className="rounded-lg bg-green-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-green-700">Add Student</button>
         </div>
 
         <div className="overflow-hidden rounded-xl bg-white shadow">
@@ -109,9 +109,7 @@ return (
                                 <td className="px-6 py-4 text-sm text-gray-600">{student.qr_code}</td>
                                 <td className="px-6 py-4">
                                 <span className={`inline-block px-3 py-1 rounded-full text-sm 
-                                ${student.status === "active"
-                                        ? "bg-green-100 text-green-700"
-                                        : "bg-red-100 text-red-700"}`}>{student.status}</span>
+                                ${student.status === "active" ? "bg-green-100 text-green-700": "bg-red-100 text-red-700"}`}>{student.status}</span>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex gap-2">

@@ -28,7 +28,13 @@ class AttendanceController
     public function scan(Request $request)
     {
         $validated = $request->validate(['qr_code' => 'required|string']);
-        $student = Student::where('qr_code',$validated['qr_code'])->first();   //need to ask this
+        //need to ask this
+        $student = Student::where('qr_code',$validated['qr_code'])->first();
+        if (!$student) {
+            return response()->json([
+                'outcome' => 'invalid',
+                'message' => 'Invalid QR code. student not found'], 422);
+        }
         if ($student->status !== 'active') {return response()->json([
                 'outcome' => 'inactive',
                 'message' => 'Attendance cannot be marked for an inactive student.'], 422);
@@ -38,6 +44,7 @@ class AttendanceController
         $alreadyMarked = Attendance::where('student_id', $student->id)->whereDate('date', today())->exists();
         if ($alreadyMarked) {
             return response()->json([
+                'outcome' => 'already_marked',
                 'message' => 'Attendance already marked for this student today.',
                 'student' => $student,], 200);
         }
@@ -49,13 +56,13 @@ class AttendanceController
             'status' => 'present',
             'scanned_value' => $validated['qr_code'],
         ]);
-        return response()->json([
-            'message' => 'Attendance marked successfully.',
-            'student' => $student,
-            'attendance' => $attendance,
-            ],201);
+            return response()->json([
+                'outcome' => 'created',
+                'message' => 'Attendance marked successfully.',
+                'student' => $student,
+                'attendance' => $attendance,
+            ], 201);
     }
-
   
     public function update(Request $request, $id)
     {
