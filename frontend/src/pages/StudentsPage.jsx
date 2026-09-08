@@ -6,12 +6,16 @@ function StudentsPage() {
     const navigate = useNavigate();
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
 
     useEffect(() => {
         const getStudents = async () => {
             try {
-                const response = await api.get("/api/students");
-                setStudents(response.data);
+                const response = await api.get(`/api/students?page=${currentPage}`);
+                setStudents(response.data.data); //pagination
+                setCurrentPage(response.data.current_page);
+                setLastPage(response.data.last_page);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -19,7 +23,7 @@ function StudentsPage() {
             }
         };
         getStudents();
-    }, []);  //here 
+    }, [currentPage]);  //here 
 
     const handleDelete = async (id) => {
     const confirmed = window.confirm("Are you sure you want to delete this student?");
@@ -39,10 +43,7 @@ function StudentsPage() {
 if (loading) {
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <p className="text-lg text-gray-600">
-                Loading students...
-            </p>
-        </div>
+            <p className="text-lg text-gray-600">Loading students...</p></div>
     );
 }
 
@@ -112,10 +113,23 @@ return (
                         ))}
                     </tbody>
                 </table>
+                <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
+                    <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-40">Previous</button>
+                    <span className="text-sm text-gray-600">Page 
+                        <span className="text-gray-800">{currentPage}</span>\<span className="text-gray-800">{lastPage}</span>
+                    </span>
+
+                    <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === lastPage}
+                        className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-40">Next</button>
+                </div>
             </div>
         </div>
     </div>
 );
 }
-
 export default StudentsPage;

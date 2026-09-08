@@ -29,7 +29,7 @@ class StudentController
 
     public function showall()
     {
-        $students = Student::all();
+        $students = Student::orderBy('id','desc')->paginate(6);  //pagination
         return response()->json($students);
     }
 

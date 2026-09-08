@@ -14,7 +14,7 @@ function AttendanceDetailPage() {
                 const studentResponse = await api.get(`/api/students/${id}`);
                 const attendanceResponse = await api.get(`/api/attendance?student_id=${id}`);
                 setStudent(studentResponse.data);
-                setAttendances(attendanceResponse.data);
+                setAttendances(attendanceResponse.data.data); //pagination
             } catch (error) {
                 console.error(error);
             } finally {
@@ -54,7 +54,6 @@ function AttendanceDetailPage() {
                             ))}
                         </tbody>
                     </table>
-                    {attendances.length === 0 && (<p className="p-6 text-gray-600">No attendance records found.</p>)}
                 </div>
             </div>
         </div>

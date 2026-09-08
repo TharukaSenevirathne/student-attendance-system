@@ -15,7 +15,7 @@ class AttendanceController
             $validated = $request->validate(['student_id' => 'required|integer|exists:students,id',]);   
             $query->where('student_id', $validated['student_id']);
         }
-        $attendances = $query->get();
+        $attendances = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(6);
         return response()->json($attendances);  //all
     }
 
