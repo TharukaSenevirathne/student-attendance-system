@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
+import { useNavigate } from "react-router-dom";
 
 function StudentDetailsPage() {
     const { id } = useParams();   //to get id from the url after click the student
     const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const getStudent = async () => {
@@ -14,7 +17,12 @@ function StudentDetailsPage() {
                 const response = await api.get(`/api/students/${id}`);
                 setStudent(response.data);
             } catch (error) {
-                console.error(error);
+                    console.error(error);
+                    if (error.response?.status === 404) 
+                        {setError("Student not found");} 
+                    else {
+                        setError("Unable to load");
+                    }
             } finally {
                 setLoading(false);
             }
@@ -25,6 +33,18 @@ function StudentDetailsPage() {
     if (loading) {
         return <p>Loading student...</p>;
     }
+    if (error) {
+    return (
+        <div className="min-h-screen bg-gray-100 p-8">
+            <div className="bg-white rounded-lg shadow-sm p-8">
+                <h1 className="text-2xl font-bold text-red-600 mb-4">{error}</h1>
+                <button
+                    onClick={() => navigate("/students")}
+                    className="rounded-lg bg-gray-600 px-5 py-3 font-semibold text-white hover:bg-gray-700">Back to Students</button>
+            </div>
+        </div>
+    );
+}
 
 return (
     <div className="min-h-screen bg-gray-100 p-8">
