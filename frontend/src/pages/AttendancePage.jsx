@@ -85,7 +85,10 @@ function AttendancePage() {
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.date}</td>
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.time}</td>
                                         <td className="px-6 py-5">
-                                            <span className="inline-block px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">{attendance.status}</span>
+                                            <span className={`inline-block px-3 py-1 rounded-full text-sm 
+                                            ${attendance.status === "present"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"}`}>{attendance.status}</span>
                                         </td>
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.scanned_value}</td>
                                         <td className="px-6 py-5">

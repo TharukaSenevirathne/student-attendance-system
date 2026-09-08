@@ -1,5 +1,4 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../styles/sidebar.css";
 import api from "../../services/api";
 
 function Sidebar() {
@@ -14,18 +13,17 @@ function Sidebar() {
     };
 
     return (
-        <aside className="sidebar bg-gray-900">
-            <div className="sidebar-header"><h2 className="text-white">Attendance System</h2></div>
-            <nav className="sidebar-nav">
-                <NavLink to="/dashboard" className="text-gray-300 hover:text-white">Dashboard</NavLink>
-                <NavLink to="/students" className="text-gray-300 hover:text-white">Students</NavLink>
-                <NavLink to="/attendance" className="text-gray-300 hover:text-white">Attendance</NavLink>
-                <NavLink to="/scanner" className="text-gray-300 hover:text-white">QR Scanner</NavLink>
-                <NavLink to="/attendance" className="text-gray-300 hover:text-white">Attendance</NavLink>
+        <aside className="fixed left-0 top-0 w-[240px] min-h-screen p-5 bg-gray-900 flex flex-col">
+            <div className="mb-[30px]"><h2 className="m-0 text-white">Attendance System</h2></div>
+            <nav className="flex flex-col gap-2.5">
+                <NavLink to="/dashboard" className="p-3 text-gray-300 hover:text-white rounded-md">Dashboard</NavLink>
+                <NavLink to="/students" className="p-3 text-gray-300 hover:text-white rounded-md">Students</NavLink>
+                <NavLink to="/attendance" className="p-3 text-gray-300 hover:text-white rounded-md">Attendance</NavLink>
+                <NavLink to="/scanner" className="p-3 text-gray-300 hover:text-white rounded-md">QR Scanner</NavLink>
             </nav>
 
-            <div className="sidebar-footer">
-                <button onClick={handleLogout} className="bg-red-600 text-white hover:bg-red-700">Logout</button>
+            <div className="mt-auto">
+                <button onClick={handleLogout} className="w-full p-3 bg-red-600 text-white hover:bg-red-700 rounded-md">Logout</button>
             </div>
         </aside>
     );
