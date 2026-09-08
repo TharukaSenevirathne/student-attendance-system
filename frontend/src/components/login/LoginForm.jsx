@@ -7,9 +7,11 @@ function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loggingIn, setLoggingIn] = useState(false);
     const handleLogin = async (e) => {
                 e.preventDefault();
         setError("");
+        setLoggingIn(true);
         try {
                           // get cookie
             await axios.get("http://localhost:8000/sanctum/csrf-cookie",
@@ -36,6 +38,9 @@ function LoginForm() {
             console.error(error);
             setError(error.response?.data?.message || "Login failed");
         }
+        finally {
+            setLoggingIn(false);
+        }
     };
 
 return (
@@ -48,8 +53,9 @@ return (
 
                 <form onSubmit={handleLogin}>
                     <div className="mb-5">
-                        <label className="block mb-2 text-sm font-semibold text-gray-700">Email Address</label>
+                        <label htmlFor="email" className="block mb-2 text-sm font-semibold text-gray-700">Email Address</label>
                         <input
+                            id="email"
                             type="email"
                             placeholder="Enter your email"
                             value={email}
@@ -59,8 +65,9 @@ return (
                     </div>
 
                     <div className="mb-5">
-                        <label className="block mb-2 text-sm font-semibold text-gray-700">Password</label>
+                        <label htmlFor="password" className="block mb-2 text-sm font-semibold text-gray-700">Password</label>
                         <input
+                            id="password"
                             type="password"
                             placeholder="Enter your password"
                             value={password}
@@ -72,7 +79,7 @@ return (
                     {error && (
                         <p className="text-red-600 text-sm mb-4">{error}</p>
                         )}
-                    <button type="submit" className="w-full py-3 border-0 rounded-md bg-indigo-600 text-white text-[15px] font-semibold cursor-pointer hover:bg-indigo-700">Login</button>
+                    <button type="submit" disabled={loggingIn} className="w-full py-3 border-0 rounded-md bg-indigo-600 text-white text-[15px] font-semibold cursor-pointer hover:bg-indigo-700">{loggingIn ? "Logging in..." : "Login"}</button>
                 </form>
             </div>
         </div>

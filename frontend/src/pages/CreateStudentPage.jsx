@@ -13,11 +13,13 @@ function CreateStudentPage() {
     const [phone, setPhone] = useState("");
     const [status, setStatus] = useState("active");
     const [createdStudent, setCreatedStudent] = useState(null);
+    const [saving, setSaving] = useState(false);  //to disable create button
 
     const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
     setError("");
+    setSaving(true);
 
         try {
             const response = await api.post("/api/students", {
@@ -38,6 +40,9 @@ function CreateStudentPage() {
             setError("Unable to create student. Try again");
         }
         }
+        finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -52,10 +57,11 @@ function CreateStudentPage() {
                     <form onSubmit={handleSubmit}>
                         {error && (
                         <p className="mb-4 text-sm text-red-600">{error}</p>)}
-                        <div className="mb-5">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700">Student ID</label>
+                        <div className="mb-5">  
+                            <label htmlFor="studentId" className="mb-2 block text-sm font-semibold text-gray-700">Student ID</label>  
                             <input
-                                type="text"
+                                id="studentId"   //without html5 browser doesn't know that this label belongs to
+                                type="text" 
                                 value={studentId}
                                 onChange={(e) => setStudentId(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"/>
@@ -64,9 +70,10 @@ function CreateStudentPage() {
                         </div>
 
                         <div className="mb-5">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700">Name</label>
+                            <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-700">Name</label>
 
                             <input
+                                id="name"
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -76,8 +83,9 @@ function CreateStudentPage() {
                         </div>
 
                         <div className="mb-5">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700">Email</label>
+                            <label htmlFor="email" className="mb-2 block text-sm font-semibold text-gray-700">Email</label>
                             <input
+                                id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -87,8 +95,9 @@ function CreateStudentPage() {
                         </div>
 
                         <div className="mb-5">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700">Phone</label>
+                            <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-gray-700">Phone</label>
                             <input
+                                id="phone"
                                 type="text"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
@@ -98,8 +107,9 @@ function CreateStudentPage() {
                         </div>
 
                         <div className="mb-6">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700">Status</label>
+                            <label htmlFor="status" className="mb-2 block text-sm font-semibold text-gray-700">Status</label>
                             <select
+                                id="status"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-blue-500">
@@ -108,7 +118,7 @@ function CreateStudentPage() {
                             </select>
                         </div>
 
-                        <button type="submit" className="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700">Create Student</button>
+                        <button type="submit" disabled={saving} className="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700">{saving ? "Creating..." : "Create Student"}</button>
                     </form>
                 </div>
             ) : 

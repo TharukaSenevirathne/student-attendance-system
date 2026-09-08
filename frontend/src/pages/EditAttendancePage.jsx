@@ -11,6 +11,7 @@ function EditAttendancePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");  //for loading failure
     const [errors, setErrors] = useState({});  //for validation errors
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {getAttendance();}, []);
 
@@ -31,6 +32,7 @@ function EditAttendancePage() {
         e.preventDefault();
         setErrors({});
         setError("");
+        setSaving(true);
         try {
             await api.put(`/api/attendance/${id}`, 
                 {
@@ -45,6 +47,9 @@ function EditAttendancePage() {
             if (error.response?.status === 422) 
                 {setErrors(error.response.data.errors); } 
             else {setError("Unable to update attendance. Please try again.");}
+        }
+        finally {
+            setSaving(false);
         }
     };
 
@@ -63,9 +68,10 @@ function EditAttendancePage() {
                 )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <input
-                            type="text"
+                            id="date"
+                            type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
@@ -74,9 +80,10 @@ function EditAttendancePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                        <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">Time</label>
                         <input
-                            type="text"
+                            id="time"
+                            type="time"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
@@ -85,8 +92,9 @@ function EditAttendancePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select
+                            id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -96,7 +104,7 @@ function EditAttendancePage() {
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                        <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">Update Attendance</button>
+                        <button type="submit" disabled={saving} className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">{saving ? "Updating..." : "Update Attendance"}</button>
                         <button
                             type="button"
                             onClick={() => navigate("/attendance")}

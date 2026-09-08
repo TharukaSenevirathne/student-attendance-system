@@ -44,6 +44,11 @@ function AttendanceDetailPage() {
                         </thead>
 
                         <tbody className="divide-y divide-gray-200">
+                                {attendances.length === 0 && (
+                                    <tr>
+                                        <td colSpan="4" className="px-6 py-8 text-center text-gray-500">No attendance records found</td>
+                                        </tr>
+                            )}
                             {attendances.map((attendance) => (
                                 <tr key={attendance.id}>
                                     <td className="px-6 py-5 text-sm text-gray-700">{attendance.date}</td>

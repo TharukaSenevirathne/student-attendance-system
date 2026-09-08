@@ -13,6 +13,7 @@ function EditStudentPage() {
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
     const [error, setError] = useState("");
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         const getStudent = async () => {
@@ -39,6 +40,7 @@ function EditStudentPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({});
+        setSaving(true);
         try {
             await api.put(`/api/students/${id}`, {
                 student_id: studentId,
@@ -53,6 +55,9 @@ function EditStudentPage() {
         if (error.response?.status === 422) {setErrors(error.response.data.errors);} 
         else {setError("Unable to update student. Try again.");}
     }
+    finally {
+            setSaving(false);
+        }
     };
 
     if (loading) {
@@ -71,8 +76,9 @@ function EditStudentPage() {
                 )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                        <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
                         <input
+                            id="studentId"
                             type="text"
                             value={studentId}
                             onChange={(e) => setStudentId(e.target.value)}
@@ -82,8 +88,9 @@ function EditStudentPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                         <input
+                            id="name"
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -93,8 +100,9 @@ function EditStudentPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input
+                            id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -104,8 +112,9 @@ function EditStudentPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input
+                            id="phone"
                             type="text"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
@@ -116,8 +125,9 @@ function EditStudentPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select
+                            id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -127,7 +137,7 @@ function EditStudentPage() {
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                        <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">Update Student</button>
+                        <button type="submit" disabled={saving} className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">{saving ? "Updating..." : "Update Student"}</button>
                         <button
                             type="button"
                             onClick={() => navigate("/students")}

@@ -8,14 +8,16 @@ function ScannerPage() {
     const [result, setResult] = useState(null);
     const [message, setMessage] = useState("");
     const [type, setType] = useState("");
+    const [scannerError, setScannerError] = useState("");
+    const [retry, setRetry] = useState(0);
 
     useEffect(() => {
-        let stopped = false;
-        const qrScanner = new QrScanner("reader");
-        scanner.current = qrScanner;
-
-        const startScanner = async () => {
+            let stopped = false;
+            const qrScanner = new QrScanner("reader");
+            scanner.current = qrScanner;
+            const startScanner = async () => {
             try {
+                setScannerError("");
                 await qrScanner.start(
                     { facingMode: "environment" },
                     {
@@ -56,7 +58,16 @@ function ScannerPage() {
                     qrScanner.clear();
                 }
             } catch (error) {
-                if (!stopped) {console.error("Scanner error:", error);}
+                if (!stopped) {
+                console.error("Scanner error:", error);
+                if (error.name === "NotAllowedError") {
+                    setScannerError("camera permission was denied. Please allow camera access");
+                } else if (error.name === "NotFoundError") {
+                    setScannerError("No camera was found on this device.");
+                } else {
+                    setScannerError("Unable to start the camera");
+                }
+            }
             }
         };
 
@@ -79,7 +90,7 @@ function ScannerPage() {
             };
             stopScanner();
         };
-    }, []);
+    }, [retry]);
 
    const scanQr = async (qrCode) => {
     try {
@@ -101,16 +112,19 @@ function ScannerPage() {
         }
         } catch (error) {
             console.error("Attendance error:", error);
-        if (error.response) {
-            setMessage(error.response.data.message ||"Unable to mark attendance.");
-            setType("error");
-            if (error.response.data.student) {
-                setResult({student: error.response.data.student,});
+            if (error.response?.status === 401) {
+                setMessage("Your session has expired.log in again");
+                setType("error");
+            } else if (error.response?.status === 422) {
+                setMessage(error.response.data.message ||"Invalid QR code");
+                setType("error");
+                if (error.response.data.student) {
+                    setResult({student: error.response.data.student,});
+                }
+            } else if (error.request) {
+                setMessage("Unable to connect to the server.please check your network connection.");
+                setType("error");
             }
-        } else {
-            setMessage("Something went wrong.");
-            setType("error");
-        }
     }
 };
 
@@ -118,6 +132,14 @@ function ScannerPage() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-3xl mx-auto bg-white rounded-lg shadow p-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">QR Scanner </h1>
+                {scannerError && (
+                    <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700">
+                        <p>{scannerError}</p>
+                        <button
+                            onClick={() => setRetry(retry + 1)} //t
+                            className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">Retry Camera</button>
+                    </div>
+                )}
                 <p className="text-gray-500 mb-6">Scan a QR code to mark attendance.</p>
                 <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     <div id="reader" className="w-full"></div>
