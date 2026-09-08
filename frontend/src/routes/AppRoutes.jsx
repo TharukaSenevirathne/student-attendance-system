@@ -9,6 +9,7 @@ import EditStudentPage from "../pages/EditStudentPage";
 import ScannerPage from "../pages/ScannerPage";
 import AttendancePage from "../pages/AttendancePage";
 import EditAttendancePage from "../pages/EditAttendancePage";
+import AttendanceDetailPage from "../pages/AttendanceDetailPage";
 
 function AppRoutes() {
     return (
@@ -87,6 +88,12 @@ function AppRoutes() {
                         <EditAttendancePage />
                     </AdminLayout>
                 }
+            />
+
+                <Route
+                path="/attendance/student/:id"
+                element={
+                <AdminLayout><AttendanceDetailPage /></AdminLayout>}
             />
 
             </Routes>

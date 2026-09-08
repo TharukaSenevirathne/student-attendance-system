@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Colombo',   //changed the default thing here
 
     /*
     |--------------------------------------------------------------------------

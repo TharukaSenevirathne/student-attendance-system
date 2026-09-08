@@ -61,7 +61,9 @@ function AttendancePage() {
                                 {attendances.map((attendance) => (
                                     <tr key={attendance.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.student?.student_id}</td>
-                                        <td className="px-6 py-5 text-sm text-gray-700">{attendance.student?.name}</td>
+                                        <td
+                                            onClick={() => navigate(`/attendance/student/${attendance.student?.id}`)}
+                                            className="px-6 py-5 text-sm text-blue-600 hover:underline cursor-pointer">{attendance.student?.name}</td>
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.date}</td>
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.time}</td>
                                         <td className="px-6 py-5">
@@ -72,13 +74,11 @@ function AttendancePage() {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() =>navigate(`/attendance/${attendance.id}/edit`)}
-                                                    className="bg-blue-50 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-100 text-sm font-medium">
-                                                    Edit</button>
+                                                    className="bg-blue-50 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-100 text-sm font-medium">Edit</button>
 
                                                 <button
                                                     onClick={() =>deleteAttendance(attendance.id)}
-                                                    className="bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 text-sm font-medium">
-                                                    Delete</button>
+                                                    className="bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 text-sm font-medium">Delete</button>
                                             </div>
                                         </td>
                                     </tr>

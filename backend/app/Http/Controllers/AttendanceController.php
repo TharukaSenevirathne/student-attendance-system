@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 
 class AttendanceController
 {
-    public function showall()
+    public function showall(Request $request)
     {
-        $attendances = Attendance::with('student')->get();
-        return response()->json($attendances);
+        $query = Attendance::with('student');
+        if ($request->has('student_id')) {   //if we need to see only one
+            $validated = $request->validate(['student_id' => 'required|integer|exists:students,id',]);   
+            $query->where('student_id', $validated['student_id']);
+        }
+        $attendances = $query->get();
+        return response()->json($attendances);  //all
     }
 
     public function show($id)
