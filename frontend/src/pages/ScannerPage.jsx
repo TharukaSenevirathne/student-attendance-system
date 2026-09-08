@@ -20,10 +20,7 @@ function ScannerPage() {
                     { facingMode: "environment" },
                     {
                         fps: 10,
-                        qrbox: {
-                            width: 250,
-                            height: 250,
-                        },
+                        qrbox: {width: 250, height: 250,},
                     },
 
                     async (qrCode) => {
@@ -35,7 +32,7 @@ function ScannerPage() {
                         try {
                             qrScanner.pause(true);
                         } catch (error) {
-                            console.log("Pause error:", error);
+                            console.log("perror:", error);
                         }
 
                         await scanQr(qrCode);
@@ -50,8 +47,7 @@ function ScannerPage() {
                                 } catch (error) {
                                     console.log("Resume error:", error);
                                 }
-                            }
-                        }, 3000);
+                            }}, 3000);
                     }
                 );
 
@@ -60,9 +56,7 @@ function ScannerPage() {
                     qrScanner.clear();
                 }
             } catch (error) {
-                if (!stopped) {
-                    console.error("Scanner error:", error);
-                }
+                if (!stopped) {console.error("Scanner error:", error);}
             }
         };
 
@@ -87,37 +81,38 @@ function ScannerPage() {
         };
     }, []);
 
-    const scanQr = async (qrCode) => {
-        try {
-            const response = await api.post(
-                "/api/attendance/scan",
-                {
-                    qr_code: qrCode,
-                }
-            );
-
-            console.log("Attendance response:", response.data);
+   const scanQr = async (qrCode) => {
+    try {
+        const response = await api.post("/api/attendance/scan",{qr_code: qrCode,});
+        console.log("Attendance response:", response.data);
+        if (response.data.outcome === "created") {
             setMessage(response.data.message);
             setType("success");
             setResult({
                 student: response.data.student,
                 attendance: response.data.attendance,
             });
+        }
 
+        else if (response.data.outcome === "already_marked") {
+            setMessage(response.data.message);
+            setType("error");
+            setResult({student: response.data.student});
+        }
         } catch (error) {
             console.error("Attendance error:", error);
-            if (error.response) {
-                setMessage(error.response.data.message ||"Unable to mark attendance.");
-                setType("error");
-                if (error.response.data.student) {
-                    setResult({student: error.response.data.student,});
-                }
-            } else {
-                setMessage("Something went wrong.");
-                setType("error");
+        if (error.response) {
+            setMessage(error.response.data.message ||"Unable to mark attendance.");
+            setType("error");
+            if (error.response.data.student) {
+                setResult({student: error.response.data.student,});
             }
+        } else {
+            setMessage("Something went wrong.");
+            setType("error");
         }
-    };
+    }
+};
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">

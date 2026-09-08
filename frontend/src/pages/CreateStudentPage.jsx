@@ -6,6 +6,7 @@ import api from "../services/api";
 function CreateStudentPage() {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
+    const [error, setError] = useState("");
     const [studentId, setStudentId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ function CreateStudentPage() {
     const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    setError("");
 
         try {
             const response = await api.post("/api/students", {
@@ -32,6 +34,9 @@ function CreateStudentPage() {
         if (error.response?.status === 422) {
             setErrors(error.response.data.errors);
         }
+        else {
+            setError("Unable to create student. Try again");
+        }
         }
     };
 
@@ -45,6 +50,8 @@ function CreateStudentPage() {
             {!createdStudent ? (
                 <div className="max-w-2xl rounded-xl bg-white p-8 shadow">
                     <form onSubmit={handleSubmit}>
+                        {error && (
+                        <p className="mb-4 text-sm text-red-600">{error}</p>)}
                         <div className="mb-5">
                             <label className="mb-2 block text-sm font-semibold text-gray-700">Student ID</label>
                             <input

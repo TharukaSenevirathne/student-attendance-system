@@ -8,6 +8,8 @@ function StudentsPage() {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     useEffect(() => {
         const getStudents = async () => {
@@ -17,7 +19,8 @@ function StudentsPage() {
                 setCurrentPage(response.data.current_page);
                 setLastPage(response.data.last_page);
             } catch (error) {
-                console.error(error);
+            console.error(error);
+            setError("Unable to load students. try again.");
             } finally {
                 setLoading(false);
             }
@@ -30,14 +33,18 @@ function StudentsPage() {
     if (!confirmed) {
         return;
     }
+    setError("");
+    setSuccess("");
     try {
         await api.delete(`/api/students/${id}`);
         setStudents(
             students.filter((student) => student.id !== id)  //keep other students that id is not equal to delete one
         );
-    } catch (error) {
-        console.error(error);
-    }
+        setSuccess("Student deleted successfully");
+        } catch (error) {
+            console.error(error);
+            setError("Unable to delete student. try again.");
+        }
 };
 
 if (loading) {
@@ -53,6 +60,12 @@ return (
             <div>
                 <h1 className="text-3xl font-bold text-gray-800">Students</h1>
                 <p className="mt-1 text-gray-500">Manage all registered students</p>
+                {error && (
+                    <p className="mt-3 text-sm text-red-600">{error}</p>
+                )}
+                {success && (
+                    <p className="mt-3 text-sm text-green-600">{success}</p>
+                )}
             </div>
 
             <button
@@ -76,6 +89,11 @@ return (
                     </thead>
 
                     <tbody className="divide-y divide-gray-200">
+                        {students.length === 0 && (
+                            <tr>
+                                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">No students found.</td>
+                            </tr>
+                        )}
                         {students.map((student) => (
                             <tr
                                 key={student.id}

@@ -12,9 +12,7 @@ function EditAttendancePage() {
     const [error, setError] = useState("");  //for loading failure
     const [errors, setErrors] = useState({});  //for validation errors
 
-    useEffect(() => {
-        getAttendance();
-    }, []);
+    useEffect(() => {getAttendance();}, []);
 
     const getAttendance = async () => {
         try {
@@ -31,6 +29,8 @@ function EditAttendancePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
+        setError("");
         try {
             await api.put(`/api/attendance/${id}`, 
                 {
@@ -42,9 +42,9 @@ function EditAttendancePage() {
             navigate("/attendance");
         } catch (error) {
             console.error("Update attendance error:", error);
-            if (error.response?.status === 422) {
-            setErrors(error.response.data.errors);
-        }
+            if (error.response?.status === 422) 
+                {setErrors(error.response.data.errors); } 
+            else {setError("Unable to update attendance. Please try again.");}
         }
     };
 
@@ -58,6 +58,9 @@ function EditAttendancePage() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Attendance</h1>
+                {error && (
+                    <p className="mb-4 text-sm text-red-600">{error}</p>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>

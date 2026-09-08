@@ -9,6 +9,7 @@ function LoginForm() {
     const [error, setError] = useState("");
     const handleLogin = async (e) => {
                 e.preventDefault();
+        setError("");
         try {
                           // get cookie
             await axios.get("http://localhost:8000/sanctum/csrf-cookie",
@@ -32,7 +33,8 @@ function LoginForm() {
             console.log(response.data);
             navigate("/dashboard");
         } catch (error) {
-        setError(error.response?.data?.message || "Login failed");
+            console.error(error);
+            setError(error.response?.data?.message || "Login failed");
         }
     };
 

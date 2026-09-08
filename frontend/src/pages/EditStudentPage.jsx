@@ -12,6 +12,7 @@ function EditStudentPage() {
     const [status, setStatus] = useState("active");
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const getStudent = async () => {
@@ -22,8 +23,11 @@ function EditStudentPage() {
                 setEmail(response.data.email);
                 setPhone(response.data.phone);
                 setStatus(response.data.status);
-            } catch (error) {
-                console.error(error);
+            }catch (error) {
+            console.error(error);
+            if (error.response?.status === 404) 
+                {setError("Student not found.");} 
+            else {setError("Unable to load student details.");}
             } finally {
                 setLoading(false);
             }
@@ -44,10 +48,11 @@ function EditStudentPage() {
                 status: status,
             });
             navigate("/students");
-        } catch (error) {
-            console.error(error);
-        if (error.response?.status === 422) {setErrors(error.response.data.errors);}
-        }
+        }  catch (error) {
+        console.error(error);
+        if (error.response?.status === 422) {setErrors(error.response.data.errors);} 
+        else {setError("Unable to update student. Try again.");}
+    }
     };
 
     if (loading) {
@@ -61,6 +66,9 @@ function EditStudentPage() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Student</h1>
+                {error && (
+                    <p className="mb-4 text-sm text-red-600">{error} </p>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
@@ -102,6 +110,9 @@ function EditStudentPage() {
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                            {errors.phone && (
+                                <p className="mt-1 text-sm text-red-600">{errors.phone[0]}</p>
+                            )}
                     </div>
 
                     <div>

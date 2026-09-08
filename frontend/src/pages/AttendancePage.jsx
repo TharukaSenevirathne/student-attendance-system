@@ -7,6 +7,7 @@ function AttendancePage() {
     const [attendances, setAttendances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     useEffect(() => {const getAttendance = async () => {
@@ -15,7 +16,8 @@ function AttendancePage() {
             setAttendances(response.data.data); //pagination
             setLastPage(response.data.last_page);
         } catch (error) {
-            setError("Unable to load");
+            console.error(error);
+            setError("Unable to load attendance records. try again");
         } finally {
             setLoading(false);
         }
@@ -28,11 +30,15 @@ function AttendancePage() {
         if (!confirmDelete) {
             return;
     }
+    setError("");
+    setSuccess("");
         try {
             await api.delete(`/api/attendance/${id}`);
             setAttendances(attendances.filter((attendance) => attendance.id !== id));
+            setSuccess("Attendance deleted successfully");
         } catch (error) {
-            alert("Unable to delete");
+        console.error(error);
+        setError("Unable to delete attendance.try again");
         }
     };
 
@@ -44,6 +50,12 @@ function AttendancePage() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="bg-white rounded-lg shadow-sm p-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">Attendance</h1>
+                {error && (
+                    <p className="mb-4 text-sm text-red-600">{error}</p>
+                )}
+                {success && (
+                    <p className="mb-4 text-sm text-green-600">{success}</p>
+                )}
                     <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full">
                             <thead className="bg-gray-50">
@@ -59,6 +71,11 @@ function AttendancePage() {
                             </thead>
 
                             <tbody className="divide-y divide-gray-200">
+                                {attendances.length === 0 && (
+                                    <tr>
+                                        <td colSpan="7" className="px-6 py-8 text-center text-gray-500">No attendance records found</td>
+                                    </tr>
+                                )}
                                 {attendances.map((attendance) => (
                                     <tr key={attendance.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-5 text-sm text-gray-700">{attendance.student?.student_id}</td>
