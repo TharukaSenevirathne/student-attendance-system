@@ -20,6 +20,7 @@ return new class extends Migration
             $table->time('time');
             $table->string('status');
             $table->string('scanned_value');
+            $table->unique(['student_id', 'date']);
             $table->timestamps();
         });
     }
