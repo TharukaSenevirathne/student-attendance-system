@@ -29,10 +29,11 @@ class AttendanceController
     {
         $validated = $request->validate(['qr_code' => 'required|string']);
         $student = Student::where('qr_code',$validated['qr_code'])->first();   //need to ask this
-
-        if (!$student) {
-            return response()->json(['message' => 'Invalid QR code. Student not found.'],422);
+        if ($student->status !== 'active') {return response()->json([
+                'outcome' => 'inactive',
+                'message' => 'Attendance cannot be marked for an inactive student.'], 422);
         }
+        if (!$student) {return response()->json(['message' => 'Invalid QR code. Student not found.'],422);}
 
         $alreadyMarked = Attendance::where('student_id', $student->id)->whereDate('date', today())->exists();
         if ($alreadyMarked) {
@@ -52,7 +53,7 @@ class AttendanceController
             'message' => 'Attendance marked successfully.',
             'student' => $student,
             'attendance' => $attendance,
-        ],201);
+            ],201);
     }
 
   
