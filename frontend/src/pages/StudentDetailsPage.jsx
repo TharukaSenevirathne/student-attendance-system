@@ -20,7 +20,7 @@ function StudentDetailsPage() {
             }
         };
         getStudent();
-    });
+    },[id]);
 
     if (loading) {
         return <p>Loading student...</p>;
