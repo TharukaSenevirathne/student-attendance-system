@@ -30,7 +30,7 @@ function EditStudentPage() {
         };
 
         getStudent();
-    }, []);
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
