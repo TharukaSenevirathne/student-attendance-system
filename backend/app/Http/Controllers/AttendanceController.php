@@ -31,14 +31,14 @@ class AttendanceController
         $student = Student::where('qr_code',$validated['qr_code'])->first();   //need to ask this
 
         if (!$student) {
-            return response()->json(['message' => 'Invalid QR code. Student not found.']);
+            return response()->json(['message' => 'Invalid QR code. Student not found.'],422);
         }
 
         $alreadyMarked = Attendance::where('student_id', $student->id)->whereDate('date', today())->exists();
         if ($alreadyMarked) {
             return response()->json([
                 'message' => 'Attendance already marked for this student today.',
-                'student' => $student,]);
+                'student' => $student,], 200);
         }
 
         $attendance = Attendance::create([
@@ -52,7 +52,7 @@ class AttendanceController
             'message' => 'Attendance marked successfully.',
             'student' => $student,
             'attendance' => $attendance,
-        ]);
+        ],201);
     }
 
   
