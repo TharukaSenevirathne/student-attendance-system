@@ -11,6 +11,7 @@ function EditStudentPage() {
     const [phone, setPhone] = useState("");
     const [status, setStatus] = useState("active");
     const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         const getStudent = async () => {
@@ -29,10 +30,11 @@ function EditStudentPage() {
         };
 
         getStudent();
-    });
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
         try {
             await api.put(`/api/students/${id}`, {
                 student_id: studentId,
@@ -44,6 +46,7 @@ function EditStudentPage() {
             navigate("/students");
         } catch (error) {
             console.error(error);
+        if (error.response?.status === 422) {setErrors(error.response.data.errors);}
         }
     };
 
@@ -66,6 +69,8 @@ function EditStudentPage() {
                             value={studentId}
                             onChange={(e) => setStudentId(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                            {errors.student_id && (<p className="mt-1 text-sm text-red-600">{errors.student_id[0]} </p>)}
                     </div>
 
                     <div>
@@ -75,6 +80,8 @@ function EditStudentPage() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                            {errors.name && (<p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>)}
                     </div>
 
                     <div>
@@ -84,6 +91,8 @@ function EditStudentPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                            {errors.email && (<p className="mt-1 text-sm text-red-600">{errors.email[0]}</p>)}
                     </div>
 
                     <div>

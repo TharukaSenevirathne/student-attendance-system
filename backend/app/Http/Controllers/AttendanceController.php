@@ -56,8 +56,8 @@ class AttendanceController
         $attendance = Attendance::findOrFail($id);
         $validated = $request->validate([
             'date' => 'required|date',
-            'time' => 'required',
-            'status' => 'required|string',
+            'time' => 'required|date_format:H:i:s',
+            'status' => 'required|in:present,absent',
         ]);
 
         $attendance->update($validated);

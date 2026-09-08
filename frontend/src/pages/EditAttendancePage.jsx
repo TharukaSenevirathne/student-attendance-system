@@ -9,7 +9,8 @@ function EditAttendancePage() {
     const [time, setTime] = useState("");
     const [status, setStatus] = useState("present");
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [error, setError] = useState("");  //for loading failure
+    const [errors, setErrors] = useState({});  //for validation errors
 
     useEffect(() => {
         getAttendance();
@@ -41,6 +42,9 @@ function EditAttendancePage() {
             navigate("/attendance");
         } catch (error) {
             console.error("Update attendance error:", error);
+            if (error.response?.status === 422) {
+            setErrors(error.response.data.errors);
+        }
         }
     };
 
@@ -61,17 +65,20 @@ function EditAttendancePage() {
                             type="text"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                            {errors.date && (<p className="mt-1 text-sm text-red-600">{errors.date[0]}</p>)}
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
                         <input
                             type="text"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+                            {errors.time && (<p className="mt-1 text-sm text-red-600">{errors.time[0]}</p>)}
                     </div>
 
                     <div>

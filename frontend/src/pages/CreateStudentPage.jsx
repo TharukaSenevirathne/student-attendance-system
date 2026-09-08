@@ -5,7 +5,7 @@ import api from "../services/api";
 
 function CreateStudentPage() {
     const navigate = useNavigate();
-
+    const [errors, setErrors] = useState({});
     const [studentId, setStudentId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -14,7 +14,8 @@ function CreateStudentPage() {
     const [createdStudent, setCreatedStudent] = useState(null);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
+    setErrors({});
 
         try {
             const response = await api.post("/api/students", {
@@ -26,7 +27,11 @@ function CreateStudentPage() {
             });
             setCreatedStudent(response.data.student);
         } catch (error) {
-            console.error(error);
+        console.error(error);
+
+        if (error.response?.status === 422) {
+            setErrors(error.response.data.errors);
+        }
         }
     };
 
@@ -47,6 +52,8 @@ function CreateStudentPage() {
                                 value={studentId}
                                 onChange={(e) => setStudentId(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"/>
+
+                                {errors.student_id && (<p className="mt-1 text-sm text-red-600">{errors.student_id[0]}</p>)}
                         </div>
 
                         <div className="mb-5">
@@ -57,6 +64,8 @@ function CreateStudentPage() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"/>
+
+                                {errors.name && (<p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>)}
                         </div>
 
                         <div className="mb-5">
@@ -66,6 +75,8 @@ function CreateStudentPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"/>
+
+                                {errors.email && (<p className="mt-1 text-sm text-red-600">{errors.email[0]}</p>)}
                         </div>
 
                         <div className="mb-5">
@@ -75,6 +86,8 @@ function CreateStudentPage() {
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"/>
+
+                                {errors.phone && (<p className="mt-1 text-sm text-red-600">{errors.phone[0]}</p>)}
                         </div>
 
                         <div className="mb-6">
